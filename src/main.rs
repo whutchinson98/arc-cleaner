@@ -12,23 +12,16 @@ fn main() {
         "StorableArchive*.json",
     ];
 
-    file_patterns
-        .iter()
-        .map(|file_pattern| {
-            println!("Cleaning up file_pattern {}", file_pattern);
+    file_patterns.into_iter().for_each(|file_pattern| {
+        println!("Cleaning up file_pattern {}", file_pattern);
+        let output = cleanup_arc(&arc_path, file_pattern);
 
-            return (*file_pattern, cleanup_arc(&arc_path, file_pattern));
-        })
-        .collect::<Vec<(&str, Output)>>()
-        .iter()
-        .for_each(|result| {
-            let (file_path, output) = result;
-            println!(
-                "file pattern {}, result {}",
-                *file_path,
-                output.status.success()
-            );
-        });
+        println!(
+            "file pattern {}, result {}",
+            file_pattern,
+            output.status.success()
+        );
+    });
 }
 
 fn cleanup_arc(arc_path: &str, remove_pattern: &str) -> Output {
